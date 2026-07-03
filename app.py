@@ -33,19 +33,20 @@ if st.button("Generate"):
     OUTPUT_DIR = "Gegeneerde_Film"
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     
-   # STAP 1: AI Storyboard Agent met "Force-Granularity"
-    with st.spinner("AI is forcing high-granularity storyboard breakdown..."):
+   # STAP 1: AI Storyboard Agent met "Dynamische Pacing"
+    with st.spinner("AI is analyzing script length to determine optimal scene count..."):
         try:
-            # We verhogen de target naar 90 om hem in jouw 65-80 zone te dwingen
+            # Dynamische berekening: 1 scene per 5 woorden is jouw ideale tempo.
+            # We zetten een ondergrens (min 10) en bovengrens (max 100) voor veiligheid.
             word_count = len(script_text.split())
-            target_scenes = 90 
+            target_scenes = max(20, min(100, word_count // 5)) 
             
             storyboard_prompt = (
                 f"Analyze the following script: {script_text}\n\n"
-                f"STRICT INSTRUCTION: You MUST generate exactly {target_scenes} scenes. "
-                "This is not a suggestion. Break the script down into the smallest possible visual moments. "
-                "Even for short sentences, find a way to split the action into multiple scenes (e.g., 'character thinking', 'character reacting', 'character acting'). "
-                "Do not group sentences. If you are under 70 scenes, you have failed the task. "
+                f"CRITICAL INSTRUCTION: Your target is to create approximately {target_scenes} scenes. "
+                "This is a dynamic ratio: you must maintain the pace of 1 scene per 5 words. "
+                "Break the script down into small, granular actions. "
+                "If the script is short, keep it punchy. If the script is long, keep the pace consistent. "
                 "Style: Minimalist stick figure illustration. "
                 "Return a JSON list of scenes. Format: {'scenes': [{'description': 'detailed visual prompt'}]}. "
                 "Do not include markdown formatting or extra text."
@@ -58,7 +59,7 @@ if st.button("Generate"):
             )
             data = json.loads(storyboard_response.choices[0].message.content)
             scenes = data['scenes']
-            st.write(f"Storyboard created with {len(scenes)} scenes.")
+            st.write(f"Storyboard created with {len(scenes)} scenes (Calculated for optimal pace).")
         except Exception as e:
             st.error(f"Error creating storyboard: {e}")
             st.stop()
