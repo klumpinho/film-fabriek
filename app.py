@@ -43,14 +43,16 @@ if st.button("Generate"):
             # We verwerken elke paragraaf apart om de AI te dwingen ALLES te doen
             for para in paragraphs:
                 storyboard_prompt = (
-                    f"You are a professional storyboard artist. Script part to analyze: '{para}'. "
-                    "You are creating a video with a relaxed, steady pace. "
-                    "Assume an average speaking rate of 130 words per minute. "
-                    "Create 1 visual scene for every 8-10 seconds of speech (roughly every 20 words). "
-                    "Do not over-segment. Focus on the main action of this text part. "
-                    "Keep the style strictly a minimalist stick figure illustration. "
-                    "Return a JSON list of scenes. Format: {'scenes': [{'description': 'detailed visual prompt'}]}. "
-                    "Do not include markdown formatting or extra text."
+                    "You are a professional storyboard artist. Analyze the provided script. "
+                "CALCULATION: You must pace the video at a rate of 1 visual scene every 10-12 seconds of speaking time. "
+                "Assume an average speaking rate of 130 words per minute (roughly 2.2 words per second). "
+                "This means you should create a new scene roughly every 25 words of text. "
+                "Only create a new scene for major conceptual shifts or changes in topic. Do not change scenes for every single sentence. "
+                "If the script is long, use more scenes. If the script is short, use fewer scenes. "
+                "Style: Minimalist stick figure illustration. "
+                "Return a JSON list of scenes. Format: {'scenes': [{'description': 'detailed visual prompt'}]}. "
+                "Do not include markdown formatting."
+                f"\n\nScript: {script_text}"
                 )
                 
                 storyboard_response = client.chat.completions.create(
