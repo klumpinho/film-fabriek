@@ -39,7 +39,7 @@ if st.button("Generate"):
             # Dynamische berekening: 1 scene per 8 woorden is jouw ideale tempo.
             # We zetten een ondergrens (min 10) en bovengrens (max 100) voor veiligheid.
             word_count = len(script_text.split())
-            target_scenes = max(20, min(100, word_count // 5)) 
+            target_scenes = max(15, min(100, word_count // 8)) 
             
             storyboard_prompt = (
                 f"Analyze the following script: {script_text}\n\n"
