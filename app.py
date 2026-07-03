@@ -33,19 +33,19 @@ if st.button("Generate"):
     OUTPUT_DIR = "Gegeneerde_Film"
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     
-   # STAP 1: AI Storyboard Agent met "Hammer-methode"
-    with st.spinner("AI is breaking down the script into 80 distinct beats..."):
+   # STAP 1: AI Storyboard Agent met "Force-Granularity"
+    with st.spinner("AI is forcing high-granularity storyboard breakdown..."):
         try:
-            # We vragen niet langer om een berekening, we geven een direct bevel.
+            # We verhogen de target naar 90 om hem in jouw 65-80 zone te dwingen
+            word_count = len(script_text.split())
+            target_scenes = 90 
+            
             storyboard_prompt = (
-                "Analyze the following script: " + script_text + "\n\n"
-                "YOU ARE A STORYBOARD ARTIST. YOUR GOAL IS TO CREATE A HIGH-DENSITY STORYBOARD. "
-                "CRITICAL INSTRUCTIONS: "
-                "1. You MUST generate exactly 80 distinct scenes. "
-                "2. DO NOT summarize. Do not group multiple sentences together. "
-                "3. Each scene should cover only a small fragment of text (about 5-8 words per scene). "
-                "4. If the text is short, split it into very small, granular actions. "
-                "5. Every sentence must be broken down into multiple visual beats. "
+                f"Analyze the following script: {script_text}\n\n"
+                f"STRICT INSTRUCTION: You MUST generate exactly {target_scenes} scenes. "
+                "This is not a suggestion. Break the script down into the smallest possible visual moments. "
+                "Even for short sentences, find a way to split the action into multiple scenes (e.g., 'character thinking', 'character reacting', 'character acting'). "
+                "Do not group sentences. If you are under 70 scenes, you have failed the task. "
                 "Style: Minimalist stick figure illustration. "
                 "Return a JSON list of scenes. Format: {'scenes': [{'description': 'detailed visual prompt'}]}. "
                 "Do not include markdown formatting or extra text."
