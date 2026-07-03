@@ -33,19 +33,19 @@ if st.button("Generate"):
     OUTPUT_DIR = "Gegeneerde_Film"
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     
-   # STAP 1: AI Storyboard Agent met "High Granularity" Tuning
-    with st.spinner("AI is analyzing the script with high granularity..."):
+   # STAP 1: AI Storyboard Agent met "Hammer-methode"
+    with st.spinner("AI is breaking down the script into 80 distinct beats..."):
         try:
-            # We verhogen de dichtheid naar 1 scene per 5 woorden
-            # En we stellen een harde ondergrens in van 65 scenes
-            word_count = len(script_text.split())
-            target_scenes = max(65, min(95, word_count // 5)) 
-            
+            # We vragen niet langer om een berekening, we geven een direct bevel.
             storyboard_prompt = (
-                f"You are a professional storyboard artist. Analyze the following script: {script_text}\n\n"
-                f"CRITICAL CONSTRAINT: You must generate approximately {target_scenes} scenes for this entire script. "
-                "Do not be sparse. Generate a new scene for every action, visual shift, or meaningful beat. "
-                "The user wants a dynamic video, so change scenes frequently! "
+                "Analyze the following script: " + script_text + "\n\n"
+                "YOU ARE A STORYBOARD ARTIST. YOUR GOAL IS TO CREATE A HIGH-DENSITY STORYBOARD. "
+                "CRITICAL INSTRUCTIONS: "
+                "1. You MUST generate exactly 80 distinct scenes. "
+                "2. DO NOT summarize. Do not group multiple sentences together. "
+                "3. Each scene should cover only a small fragment of text (about 5-8 words per scene). "
+                "4. If the text is short, split it into very small, granular actions. "
+                "5. Every sentence must be broken down into multiple visual beats. "
                 "Style: Minimalist stick figure illustration. "
                 "Return a JSON list of scenes. Format: {'scenes': [{'description': 'detailed visual prompt'}]}. "
                 "Do not include markdown formatting or extra text."
