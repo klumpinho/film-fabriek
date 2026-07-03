@@ -36,7 +36,7 @@ if st.button("Generate"):
    # STAP 1: AI Storyboard Agent met "Dynamische Pacing"
     with st.spinner("AI is analyzing script length to determine optimal scene count..."):
         try:
-            # Dynamische berekening: 1 scene per 5 woorden is jouw ideale tempo.
+            # Dynamische berekening: 1 scene per 8 woorden is jouw ideale tempo.
             # We zetten een ondergrens (min 10) en bovengrens (max 100) voor veiligheid.
             word_count = len(script_text.split())
             target_scenes = max(20, min(100, word_count // 5)) 
@@ -44,7 +44,7 @@ if st.button("Generate"):
             storyboard_prompt = (
                 f"Analyze the following script: {script_text}\n\n"
                 f"CRITICAL INSTRUCTION: Your target is to create approximately {target_scenes} scenes. "
-                "This is a dynamic ratio: you must maintain the pace of 1 scene per 5 words. "
+                "This is a dynamic ratio: you must maintain the pace of 1 scene per 8 words. "
                 "Break the script down into small, granular actions. "
                 "If the script is short, keep it punchy. If the script is long, keep the pace consistent. "
                 "Style: Minimalist stick figure illustration. "
