@@ -44,9 +44,11 @@ if st.button("Generate"):
             for para in paragraphs:
                 storyboard_prompt = (
                     f"You are a professional storyboard artist. Script part to analyze: '{para}'. "
-                    "You MUST create 1 visual scene for every 4 seconds of speech in this text part. "
-                    "Assume 2.2 words per second. Keep the style as a minimalist stick figure illustration. "
-                    "Focus on the specific action in this text part. "
+                    "You are creating a video with a relaxed, steady pace. "
+                    "Assume an average speaking rate of 130 words per minute. "
+                    "Create 1 visual scene for every 8-10 seconds of speech (roughly every 20 words). "
+                    "Do not over-segment. Focus on the main action of this text part. "
+                    "Keep the style strictly a minimalist stick figure illustration. "
                     "Return a JSON list of scenes. Format: {'scenes': [{'description': 'detailed visual prompt'}]}. "
                     "Do not include markdown formatting or extra text."
                 )
