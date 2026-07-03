@@ -33,18 +33,19 @@ if st.button("Generate"):
     OUTPUT_DIR = "Gegeneerde_Film"
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     
-   # STAP 1: AI Storyboard Agent met "Scene Density" Tuning
-    with st.spinner("AI is analyzing the script..."):
+   # STAP 1: AI Storyboard Agent met "High Granularity" Tuning
+    with st.spinner("AI is analyzing the script with high granularity..."):
         try:
-            # We berekenen nu een hogere dichtheid (1 scene per 7 woorden)
+            # We verhogen de dichtheid naar 1 scene per 5 woorden
+            # En we stellen een harde ondergrens in van 65 scenes
             word_count = len(script_text.split())
-            target_scenes = max(50, min(90, word_count // 7)) 
+            target_scenes = max(65, min(95, word_count // 5)) 
             
             storyboard_prompt = (
                 f"You are a professional storyboard artist. Analyze the following script: {script_text}\n\n"
-                f"STRICT CONSTRAINT: You must generate approximately {target_scenes} scenes for this entire script. "
-                "You are too sparse currently. Break the script down into much smaller visual beats. "
-                "Change scenes frequently to keep the video dynamic. "
+                f"CRITICAL CONSTRAINT: You must generate approximately {target_scenes} scenes for this entire script. "
+                "Do not be sparse. Generate a new scene for every action, visual shift, or meaningful beat. "
+                "The user wants a dynamic video, so change scenes frequently! "
                 "Style: Minimalist stick figure illustration. "
                 "Return a JSON list of scenes. Format: {'scenes': [{'description': 'detailed visual prompt'}]}. "
                 "Do not include markdown formatting or extra text."
@@ -57,7 +58,7 @@ if st.button("Generate"):
             )
             data = json.loads(storyboard_response.choices[0].message.content)
             scenes = data['scenes']
-            st.write(f"Storyboard created with {len(scenes)} scenes (Density tuned).")
+            st.write(f"Storyboard created with {len(scenes)} scenes.")
         except Exception as e:
             st.error(f"Error creating storyboard: {e}")
             st.stop()
