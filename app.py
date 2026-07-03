@@ -34,30 +34,32 @@ if st.button("Generate"):
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     
     # STAP 1: AI Storyboard Agent met timing instructie
-    with st.spinner("AI is analyzing your script (targeting 1 scene every 3 seconds)..."):
+    with st.spinner("AI is analyzing your script block by block..."):
         try:
-            # We maken de JSON-structuur als een aparte variabele om de fout te voorkomen
-            json_structure = "{'scenes': [{'description': 'detailed visual prompt'}]}"
+            # We splitsen het script in logische delen (paragrafen)
+            paragraphs = [p for p in script_text.split('\n') if p.strip()]
+            all_scenes = []
             
-            storyboard_prompt = (
-                "You are a professional storyboard artist. Analyze the provided script. "
-                "Assume an average speaking rate of 130 words per minute (roughly 2.2 words per second). "
-                "For every 4 seconds of speech, create exactly 1 visual scene. "
-                "So, create a scene roughly every 9-10 words. "
-                "Describe scenes with clear setting, character emotion, and engaging composition. "
-                "Keep the style strictly a stick figure illustration. "
-                f"Return a JSON list of scenes. Format: {json_structure}. "
-                "Do not include markdown formatting. "
-                f"Script: {script_text}"
-            )
+            # We verwerken elke paragraaf apart om de AI te dwingen ALLES te doen
+            for para in paragraphs:
+                storyboard_prompt = (
+                    f"You are a professional storyboard artist. Script part to analyze: '{para}'. "
+                    "You MUST create 1 visual scene for every 4 seconds of speech in this text part. "
+                    "Assume 2.2 words per second. Keep the style as a minimalist stick figure illustration. "
+                    "Focus on the specific action in this text part. "
+                    "Return a JSON list of scenes. Format: {'scenes': [{'description': 'detailed visual prompt'}]}. "
+                    "Do not include markdown formatting or extra text."
+                )
+                
+                storyboard_response = client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=[{"role": "user", "content": storyboard_prompt}],
+                    response_format={ "type": "json_object" }
+                )
+                data = json.loads(storyboard_response.choices[0].message.content)
+                all_scenes.extend(data['scenes'])
             
-            storyboard_response = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[{"role": "user", "content": storyboard_prompt}],
-                response_format={ "type": "json_object" }
-            )
-            data = json.loads(storyboard_response.choices[0].message.content)
-            scenes = data['scenes']
+            scenes = all_scenes
             st.write(f"Storyboard created with {len(scenes)} scenes.")
         except Exception as e:
             st.error(f"Error creating storyboard: {e}")
