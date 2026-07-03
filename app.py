@@ -33,37 +33,31 @@ if st.button("Generate"):
     OUTPUT_DIR = "Gegeneerde_Film"
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     
-    # STAP 1: AI Storyboard Agent met timing instructie
-    with st.spinner("AI is analyzing your script block by block..."):
+   # STAP 1: AI Storyboard Agent met "Global View" (geen loop meer)
+    with st.spinner("AI is analyzing the entire script at once to optimize scene count..."):
         try:
-            # We splitsen het script in logische delen (paragrafen)
-            paragraphs = [p for p in script_text.split('\n') if p.strip()]
-            all_scenes = []
+            # We sturen het hele script in één keer naar de AI.
+            # We geven hem een wiskundige opdracht om het aantal scenes te beperken.
+            word_count = len(script_text.split())
+            target_scenes = max(30, min(80, word_count // 20)) # Richtlijn: 1 scene per 20 woorden, min 30, max 80.
             
-            # We verwerken elke paragraaf apart om de AI te dwingen ALLES te doen
-            for para in paragraphs:
-                storyboard_prompt = (
-                    "You are a professional storyboard artist. Analyze the provided script. "
-                "CALCULATION: You must pace the video at a rate of 1 visual scene every 10-12 seconds of speaking time. "
-                "Assume an average speaking rate of 130 words per minute (roughly 2.2 words per second). "
-                "This means you should create a new scene roughly every 25 words of text. "
-                "Only create a new scene for major conceptual shifts or changes in topic. Do not change scenes for every single sentence. "
-                "If the script is long, use more scenes. If the script is short, use fewer scenes. "
+            storyboard_prompt = (
+                f"You are a professional storyboard artist. Analyze the following script: {script_text}\n\n"
+                f"CRITICAL CONSTRAINT: You must create exactly {target_scenes} scenes for this entire script. "
+                "Do not create a scene for every sentence. Group ideas together into visual beats. "
+                "Only create a new scene when the topic changes or when a significant new visual element is needed. "
                 "Style: Minimalist stick figure illustration. "
                 "Return a JSON list of scenes. Format: {'scenes': [{'description': 'detailed visual prompt'}]}. "
-                "Do not include markdown formatting."
-                f"\n\nScript: {script_text}"
-                )
-                
-                storyboard_response = client.chat.completions.create(
-                    model="gpt-4o-mini",
-                    messages=[{"role": "user", "content": storyboard_prompt}],
-                    response_format={ "type": "json_object" }
-                )
-                data = json.loads(storyboard_response.choices[0].message.content)
-                all_scenes.extend(data['scenes'])
+                "Do not include markdown formatting or extra text."
+            )
             
-            scenes = all_scenes
+            storyboard_response = client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[{"role": "user", "content": storyboard_prompt}],
+                response_format={ "type": "json_object" }
+            )
+            data = json.loads(storyboard_response.choices[0].message.content)
+            scenes = data['scenes']
             st.write(f"Storyboard created with {len(scenes)} scenes.")
         except Exception as e:
             st.error(f"Error creating storyboard: {e}")
