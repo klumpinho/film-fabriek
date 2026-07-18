@@ -117,3 +117,29 @@ if st.button("Generate"):
         progress_bar.progress((i + 1) / len(scenes))
 
     st.success("Production Finished! 🎉")
+
+import zipfile
+import io
+
+# ... (jouw bestaande code waar je de plaatjes genereert en toont) ...
+
+# 1. Zorg dat je een lijst hebt met de gegenereerde plaatjes (bijv. image_data_list)
+# 2. Voeg dit toe onder je st.write/st.image gedeelte:
+
+def create_zip(images):
+    zip_buffer = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer, "w") as zip_file:
+        for i, img_bytes in enumerate(images):
+            zip_file.writestr(f"scene_{i+1}.png", img_bytes)
+    return zip_buffer.getvalue()
+
+# Stel dat 'image_bytes_list' een lijst is met de ruwe bytes van je plaatjes:
+if 'image_bytes_list' in st.session_state and len(st.session_state.image_bytes_list) > 0:
+    zip_data = create_zip(st.session_state.image_bytes_list)
+    
+    st.download_button(
+        label="📥 Download All Scenes as ZIP",
+        data=zip_data,
+        file_name="storyboard.zip",
+        mime="application/zip"
+    )
