@@ -287,8 +287,8 @@ elif huidige_pagina == "🎙️ Voice-over Studio":
                 "xi-api-key": elevenlabs_key
             }
             
-            # Je kunt de model_id aanpassen naar "eleven_multilingual_v2" voor de beste kwaliteit
-           data = {
+            # Zorg dat de 'd' van data precies onder de 'h' van headers staat!
+            data = {
                 "text": script_to_read,
                 "model_id": "eleven_multilingual_v2", 
                 "voice_settings": {
