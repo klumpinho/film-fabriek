@@ -24,28 +24,28 @@ st.sidebar.info("Laat de editor zijn/haar eigen OpenAI API key invullen op de pa
 # ==========================================
 if huidige_pagina == "✍️ Script Generator":
     st.title("YouTube Script Creator PRO")
-    st.write("Genereer perfecte, ElevenLabs-ready scripts op basis van jouw bulletpoints.")
+    st.write("Generate perfect, ElevenLabs-ready scripts based on your bullet points.")
     
-    # API key invulveld voor de editor[cite: 1]
-    user_api_key = st.text_input("Paste je OpenAI API key hier:", type="password", key="api_key_script")
+    # API key invulveld voor de editor
+    user_api_key = st.text_input("Paste your OpenAI API key here:", type="password", key="api_key_script")
     
-    # Velden overgenomen uit je originele desktop-app[cite: 2]
-    video_titel = st.text_input("Titel van je video:")
+    # Velden overgenomen uit je originele desktop-app
+    video_titel = st.text_input("Title of your video:")
     
-    default_bullets = "- Punt 1: ...\n- Punt 2: ...\n- Punt 3: ..."
-    bullet_points = st.text_area("Jouw Bulletpoints (elk punt op een nieuwe regel):", value=default_bullets, height=200)
+    default_bullets = "- Point 1: ...\n- Point 2: ...\n- Point 3: ..."
+    bullet_points = st.text_area("Your Bullet points (each point on a new line):", value=default_bullets, height=200)
     
-    if st.button("🚀 Genereer Script"):
+    if st.button("🚀 Generate Script"):
         if not user_api_key:
-            st.error("Vul een API key in!")
+            st.error("Please enter an API key!")
             st.stop()
         if not video_titel or not bullet_points or bullet_points == default_bullets:
-            st.warning("Vul alsjeblieft zowel de titel als je eigen bulletpoints in![cite: 2]")
+            st.warning("Please fill in both the title and your bullet points!")
             st.stop()
             
         client = OpenAI(api_key=user_api_key)
         
-        # Exact dezelfde snoeiharde prompt uit je desktop-app[cite: 2]
+        # Exact dezelfde snoeiharde prompt uit je desktop-app
         system_prompt = f"""
         You are writing a script for an animated stickman YouTube channel. The tone MUST be incredibly conversational, raw, and human. Imagine you are explaining deep psychology to a close friend over a cup of coffee. It must sound like real life advice. NOT a formal presentation, NOT a slideshow, and NOT a classroom lecture. 
 
@@ -78,33 +78,33 @@ if huidige_pagina == "✍️ Script Generator":
         - Keep sentences relatively short, punchy, and conversational, but write a LOT of them.
         """
         
-        with st.spinner("⏳ Bezig met schrijven... Dit kan even duren!"):
+        with st.spinner("⏳ Writing script... This may take a while!"):
             try:
                 response = client.chat.completions.create(
                     model="gpt-4",
                     messages=[
-                        {"role": "system", "content": "You are a master scriptwriter. You strictly follow formatting rules.[cite: 2]"},
+                        {"role": "system", "content": "You are a master scriptwriter. You strictly follow formatting rules."},
                         {"role": "user", "content": system_prompt}
                     ],
                     temperature=0.7
                 )
                 script_content = response.choices[0].message.content
                 
-                st.success("BINGO! 🎉 Je script is succesvol geschreven![cite: 2]")
+                st.success("BINGO! 🎉 Your script has been successfully written!")
                 
                 # Toon het script zodat de editor het makkelijk kan kopiëren
-                st.text_area("Resultaat (Kopieer dit naar ElevenLabs):", value=script_content, height=400)
+                st.text_area("Result (Copy this to ElevenLabs):", value=script_content, height=400)
                 
-                # Voeg direct een knop toe om het als .txt te downloaden[cite: 2]
+                # Voeg direct een knop toe om het als .txt te downloaden
                 st.download_button(
-                    label="📥 Download als .txt bestand",
+                    label="📥 Download as .txt file",
                     data=script_content,
-                    file_name="Nieuw_Video_Script.txt",
+                    file_name="New_Video_Script.txt",
                     mime="text/plain"
                 )
                 
             except Exception as e:
-                st.error(f"Er ging iets mis met de API: {e}[cite: 2]")
+                st.error(f"Something went wrong with the API: {e}")
 
 
 # ==========================================
