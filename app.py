@@ -13,10 +13,10 @@ st.set_page_config(layout="wide", page_title="De Film Fabriek")
 # ==========================================
 # NAVIGATIE MENU (SIDEBAR)
 # ==========================================
-st.sidebar.title("🛠️ De Film Fabriek")
+st.sidebar.title("🛠️ The Film Creator")
 huidige_pagina = st.sidebar.radio("Kies je tool:", ["✍️ Script Generator", "🎬 Storyboard Fabriek"])
 st.sidebar.markdown("---")
-st.sidebar.info("Laat de editor zijn/haar eigen OpenAI API key invullen op de pagina's.")
+st.sidebar.info("Let the editor use their own OpenAI API key.")
 
 
 # ==========================================
