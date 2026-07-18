@@ -14,9 +14,9 @@ st.set_page_config(layout="wide", page_title="De Film Fabriek")
 # NAVIGATIE MENU (SIDEBAR)
 # ==========================================
 st.sidebar.title("🛠️ The Film Creator")
-huidige_pagina = st.sidebar.radio("Choose your tool:", ["✍️ Script Generator", "🎬 Storyboard Fabriek"])
-st.sidebar.markdown("---")
-st.sidebar.info("Let the editor use their own OpenAI API key.")
+huidige_pagina = st.sidebar.radio("Kies je tool:", ["✍️ Script Generator", "🎙️ Voice-over Studio", "🎬 Storyboard Fabriek"])
+st.sidebar.markdown("***")
+st.sidebar.info("Let the editor use their own OpenAI API key. Voice-overs are securely handled internally.")
 
 
 # ==========================================
@@ -251,3 +251,67 @@ elif huidige_pagina == "🎬 Storyboard Fabriek":
                 file_name="storyboard.zip",
                 mime="application/zip"
             )
+
+# ==========================================
+# TOOL 3: THE VOICE-OVER STUDIO
+# ==========================================
+elif huidige_pagina == "🎙️ Voice-over Studio":
+    st.title("🎙️ Voice-over Studio")
+    st.write("Convert the generated script directly into an ElevenLabs voice-over.")
+    
+    # Haal de veilige sleutel op uit Streamlit Secrets
+    try:
+        elevenlabs_key = st.secrets["ELEVENLABS_API_KEY"]
+    except:
+        st.error("API key not found in Streamlit Secrets. Please contact the administrator.")
+        st.stop()
+        
+    # Vul hier de Voice ID in van de stem die je altijd gebruikt voor je video's
+    # (Je vindt deze ID op de website van ElevenLabs in de Voice Library/Lab)
+    VOICE_ID = "VZcBEw9QXVSghzV5UKLN" 
+    
+    script_to_read = st.text_area("Paste the final script here:", height=300)
+    
+    if st.button("🎧 Generate Audio"):
+        if not script_to_read:
+            st.warning("Please paste a script first!")
+            st.stop()
+            
+        with st.spinner("Generating professional voice-over... This takes a moment."):
+            
+            url = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}"
+            
+            headers = {
+                "Accept": "audio/mpeg",
+                "Content-Type": "application/json",
+                "xi-api-key": elevenlabs_key
+            }
+            
+            # Je kunt de model_id aanpassen naar "eleven_multilingual_v2" voor de beste kwaliteit
+            data = {
+                "text": script_to_read,
+                "model_id": "eleven_monolingual_v1", 
+                "voice_settings": {
+                    "stability": 0.5,
+                    "similarity_boost": 0.75
+                }
+            }
+            
+            response = requests.post(url, json=data, headers=headers)
+            
+            if response.status_code == 200:
+                audio_bytes = response.content
+                st.success("BINGO! 🎉 Audio generated successfully!")
+                
+                # Laat de audio direct in de browser afspelen
+                st.audio(audio_bytes, format="audio/mp3")
+                
+                # Voeg een downloadknop toe voor de editor
+                st.download_button(
+                    label="📥 Download Voice-over (MP3)",
+                    data=audio_bytes,
+                    file_name="Voiceover_Ready.mp3",
+                    mime="audio/mpeg"
+                )
+            else:
+                st.error(f"Something went wrong with ElevenLabs: {response.text}")
