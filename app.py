@@ -288,9 +288,9 @@ elif huidige_pagina == "🎙️ Voice-over Studio":
             }
             
             # Je kunt de model_id aanpassen naar "eleven_multilingual_v2" voor de beste kwaliteit
-            data = {
+           data = {
                 "text": script_to_read,
-                "model_id": "eleven_monolingual_v1", 
+                "model_id": "eleven_multilingual_v2", 
                 "voice_settings": {
                     "stability": 0.5,
                     "similarity_boost": 0.75
