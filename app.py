@@ -29,8 +29,11 @@ if huidige_pagina == "✍️ Script Generator":
     # API key invulveld voor de editor
     user_api_key = st.text_input("Paste your OpenAI API key here:", type="password", key="api_key_script")
     
-    # Velden overgenomen uit je originele desktop-app
+    # Velden voor de video details
     video_titel = st.text_input("Title of your video:")
+    
+    # Nieuw: Input voor het gewenste aantal woorden
+    target_words = st.number_input("Target Word Count (approximate):", min_value=200, max_value=5000, value=1200, step=100)
     
     default_bullets = "- Point 1: ...\n- Point 2: ...\n- Point 3: ..."
     bullet_points = st.text_area("Your Bullet points (each point on a new line):", value=default_bullets, height=200)
@@ -45,7 +48,7 @@ if huidige_pagina == "✍️ Script Generator":
             
         client = OpenAI(api_key=user_api_key)
         
-        # Exact dezelfde snoeiharde prompt uit je desktop-app
+        # De prompt is geüpdatet met de target_words variabele
         system_prompt = f"""
         You are writing a script for an animated stickman YouTube channel. The tone MUST be incredibly conversational, raw, and human. Imagine you are explaining deep psychology to a close friend over a cup of coffee. It must sound like real life advice. NOT a formal presentation, NOT a slideshow, and NOT a classroom lecture. 
 
@@ -53,12 +56,8 @@ if huidige_pagina == "✍️ Script Generator":
         And the following topics:
         {bullet_points}
 
-        CRITICAL LENGTH & DEPTH REQUIREMENT: 
-        This must be a long, detailed video. To achieve the correct length, you MUST write EXACTLY 3 paragraphs for EVERY SINGLE bullet point. 
-        - Paragraph 1: A highly relatable real-life example or metaphor setting up the problem (minimum 4 sentences).
-        - Paragraph 2: The deep psychology, neuroscience, or specific study behind it explaining WHY our brains do this (minimum 4 sentences).
-        - Paragraph 3: A highly actionable, practical daily hack the viewer can use (minimum 4 sentences).
-        Do not rush. Take your time to build the narrative. If you write less than 3 distinct paragraphs per point, the script fails.
+        CRITICAL LENGTH REQUIREMENT: 
+        Your absolute main goal is to write a script that is approximately {target_words} words long. Expand on the psychology, use deep metaphors, and give actionable advice to reach this length naturally without sounding repetitive.
 
         STRICT TONE & TRANSITION RULES (CRITICAL!):
         - NO SLIDESHOW TRANSITIONS: You are FORBIDDEN from using robotic list phrases like Next up, Moving on to, Next we have, Finally we have, Let us talk about, or Another point is. 
@@ -70,7 +69,8 @@ if huidige_pagina == "✍️ Script Generator":
         You MUST end the script with a powerful outro. First, give a brief, motivating conclusion. Then, you MUST ask the viewers one specific, engaging question related to the topic to trigger them to comment. Finally, you MUST explicitly tell them to like the video and subscribe to the channel.
 
         CRITICAL ELEVENLABS FORMATTING RULES (IF YOU FAIL THIS, THE AUDIO BREAKS):
-        - ABSOLUTELY NO QUOTATION MARKS. Do NOT use " or ' anywhere in the script. Ever. Replace them with nothing or rephrase the sentence entirely.
+        - ABSOLUTELY NO QUOTATION MARKS OF ANY KIND. Do NOT use ", ', “, ”, ‘, or ’ anywhere in the script. Ever. Replace them with nothing or rephrase.
+        - NO DASHES OR HYPHENS. Do not use - or —. 
         - NO NUMBERS. Spell out ALL numbers (e.g. write seven instead of 7, twenty four instead of 24).
         - NO CONTRACTIONS. Write out words fully: use do not instead of don't, it is instead of it's, you are instead of you're.
         - GRAMMAR FIX FOR CONTRACTIONS: When asking tag questions without contractions, use proper grammar. For example, write does it not? instead of the awkward does not it?. Write is it not? instead of is not it?.
@@ -78,7 +78,7 @@ if huidige_pagina == "✍️ Script Generator":
         - Keep sentences relatively short, punchy, and conversational, but write a LOT of them.
         """
         
-        with st.spinner("⏳ Writing script... This may take a while!"):
+        with st.spinner(f"⏳ Writing a ~{target_words} word script... This may take a while!"):
             try:
                 response = client.chat.completions.create(
                     model="gpt-4",
@@ -90,10 +90,19 @@ if huidige_pagina == "✍️ Script Generator":
                 )
                 script_content = response.choices[0].message.content
                 
+                # ELEVENLABS CLEANUP: Hier strippen we geforceerd alle overgebleven aanhalingstekens en streepjes eruit via Python
+                script_content = script_content.replace('"', '').replace("'", "").replace("“", "").replace("”", "").replace("‘", "").replace("’", "").replace("-", " ")
+                
+                # Bereken het daadwerkelijke aantal woorden
+                actual_word_count = len(script_content.split())
+                
                 st.success("BINGO! 🎉 Your script has been successfully written!")
                 
+                # Toon de woordenteller aan de editor
+                st.info(f"📊 Final Script Length: **{actual_word_count} words** (Target was {target_words})")
+                
                 # Toon het script zodat de editor het makkelijk kan kopiëren
-                st.text_area("Result (Copy this to ElevenLabs):", value=script_content, height=400)
+                st.text_area("Result (Copy this directly into ElevenLabs):", value=script_content, height=400)
                 
                 # Voeg direct een knop toe om het als .txt te downloaden
                 st.download_button(
