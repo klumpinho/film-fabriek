@@ -121,7 +121,7 @@ if huidige_pagina == "✍️ Script Generator":
 # ==========================================
 elif huidige_pagina == "🎬 Storyboard Fabriek":
     st.title("Generate Stickman Images For Your Videos")
-    st.write("The factory is running! Enter your API key, paste your script, and let's create.[cite: 1]")
+    st.write("The factory is running! Enter your API key, paste your script, and let's create.")
 
     user_api_key = st.text_input("Paste your OpenAI API key here:", type="password", key="api_key_images")
 
@@ -134,7 +134,7 @@ elif huidige_pagina == "🎬 Storyboard Fabriek":
 
     script_text = st.text_area("Paste here your script:", height=250)
 
-    # Handige functie voor de ZIP file download[cite: 1]
+    # Handige functie voor de ZIP file download
     def create_zip(images):
         zip_buffer = io.BytesIO()
         with zipfile.ZipFile(zip_buffer, "w") as zip_file:
@@ -144,10 +144,10 @@ elif huidige_pagina == "🎬 Storyboard Fabriek":
 
     if st.button("Generate"):
         if not user_api_key:
-            st.error("Oops! Don't forget your API key.[cite: 1]")
+            st.error("Oops! Don't forget your API key.")
             st.stop()
         if not script_text:
-            st.warning("Please paste your script in the box above.[cite: 1]")
+            st.warning("Please paste your script in the box above.")
             st.stop()
 
         client = OpenAI(api_key=user_api_key)
@@ -226,26 +226,26 @@ elif huidige_pagina == "🎬 Storyboard Fabriek":
                 elif hasattr(image_data, 'b64_json') and image_data.b64_json:
                     img_data = base64.b64decode(image_data.b64_json)
                 else:
-                    raise Exception("Geen afbeelding ontvangen van de API.[cite: 1]")
+                    raise Exception("Geen afbeelding ontvangen van de API.")
                 
                 # Opslaan in de map (als backup)
                 with open(doel_pad, 'wb') as handler:
                     handler.write(img_data)
                 
-                # Opslaan in het geheugen voor de ZIP download knop[cite: 1]
+                # Opslaan in het geheugen voor de ZIP download knop
                 st.session_state.image_bytes_list.append(img_data)
                 
                 # Teken in een van de drie kolommen
                 cols[i % 3].image(doel_pad, caption=f"Scene {i+1}")
                 
             except Exception as e:
-                st.error(f"Error generating image {i+1}: {e}[cite: 1]")
+                st.error(f"Error generating image {i+1}: {e}")
 
             progress_bar.progress((i + 1) / len(scenes))
 
-        st.success("Production Finished! 🎉[cite: 1]")
+        st.success("Production Finished! 🎉")
         
-        # De download-all ZIP knop verschijnt zodra alles klaar is[cite: 1]
+        # De download-all ZIP knop verschijnt zodra alles klaar is
         if 'image_bytes_list' in st.session_state and len(st.session_state.image_bytes_list) > 0:
             zip_data = create_zip(st.session_state.image_bytes_list)
             st.download_button(
