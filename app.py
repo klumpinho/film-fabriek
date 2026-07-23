@@ -157,21 +157,22 @@ elif huidige_pagina == "🎬 Storyboard Fabriek":
         # Reset of maak een nieuwe lijst aan voor de bytes van de afbeeldingen (voor de ZIP-knop)
         st.session_state.image_bytes_list = []
         
-        with st.spinner("AI is analyzing script length to determine optimal scene count...[cite: 1]"):
+        with st.spinner("AI is analyzing script length to determine optimal scene count..."):
             try:
                 word_count = len(script_text.split())
                 target_scenes = max(15, min(100, word_count // 8)) 
                 
+                # Hier herstellen we de originele instructie om er een JSON lijst van te maken
                 storyboard_prompt = (
                     f"Analyze the following script: {script_text}\n\n"
-                    "Generate a YouTube video illustration (16:9) . "
-                "STYLE REQUIREMENTS: Simple 2D black line drawings, mostly white empty space . "
-                "Pure white background, thick uneven black outlines, wobbly hand-drawn lines . "
-                "Flat colors only . Very basic shapes and childish comic style . "
-                "No realistic shading, no 3D, no cinematic lighting, no realistic cartoon style . "
-                "Keep compositions extremely clear, simple, bold and centered . "
-                f"OBJECTS AND ACTION TO DRAW: {actie_prompt_en}"
-            )
+                    f"CRITICAL INSTRUCTION: Your target is to create approximately {target_scenes} scenes. "
+                    "This is a dynamic ratio: you must maintain the pace of 1 scene per 8 words. "
+                    "Break the script down into small, granular actions. "
+                    "If the script is short, keep it punchy. If the script is long, keep the pace consistent. "
+                    "Style: Minimalist stick figure illustration. "
+                    "Return a JSON list of scenes. Format: {'scenes': [{'description': 'detailed visual prompt'}]}. "
+                    "Do not include markdown formatting or extra text."
+                )
 
                 
                 storyboard_response = client.chat.completions.create(
