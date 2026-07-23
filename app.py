@@ -180,9 +180,9 @@ elif huidige_pagina == "🎬 Storyboard Fabriek":
                 )
                 data = json.loads(storyboard_response.choices[0].message.content)
                 scenes = data['scenes']
-                st.write(f"Storyboard created with {len(scenes)} scenes (Calculated for optimal pace).[cite: 1]")
+                st.write(f"Storyboard created with {len(scenes)} scenes (Calculated for optimal pace).")
             except Exception as e:
-                st.error(f"Error creating storyboard: {e}[cite: 1]")
+                st.error(f"Error creating storyboard: {e}")
                 st.stop()
 
         progress_bar = st.progress(0)
