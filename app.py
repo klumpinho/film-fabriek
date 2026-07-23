@@ -129,10 +129,10 @@ elif huidige_pagina == "🎬 Storyboard Fabriek":
         "Medium quality": "standard",
         "High quality (may cost more Openai tokes)": "hd"
     }
-    selection = st.selectbox("Choose your Image Quality:[cite: 1]", list(quality_map.keys()))
+    selection = st.selectbox("Choose your Image Quality:", list(quality_map.keys()))
     kwaliteit = quality_map[selection]
 
-    script_text = st.text_area("Paste here your script:[cite: 1]", height=250)
+    script_text = st.text_area("Paste here your script:", height=250)
 
     # Handige functie voor de ZIP file download[cite: 1]
     def create_zip(images):
@@ -142,7 +142,7 @@ elif huidige_pagina == "🎬 Storyboard Fabriek":
                 zip_file.writestr(f"scene_{i+1}.png", img_bytes)
         return zip_buffer.getvalue()
 
-    if st.button("Generate[cite: 1]"):
+    if st.button("Generate"):
         if not user_api_key:
             st.error("Oops! Don't forget your API key.[cite: 1]")
             st.stop()
@@ -164,14 +164,15 @@ elif huidige_pagina == "🎬 Storyboard Fabriek":
                 
                 storyboard_prompt = (
                     f"Analyze the following script: {script_text}\n\n"
-                    f"CRITICAL INSTRUCTION: Your target is to create approximately {target_scenes} scenes. "
-                    "This is a dynamic ratio: you must maintain the pace of 1 scene per 8 words. "
-                    "Break the script down into small, granular actions. "
-                    "If the script is short, keep it punchy. If the script is long, keep the pace consistent. "
-                    "Style: Minimalist stick figure illustration. "
-                    "Return a JSON list of scenes. Format: {'scenes': [{'description': 'detailed visual prompt'}]}. "
-                    "Do not include markdown formatting or extra text.[cite: 1]"
-                )
+                    "Generate a YouTube video illustration (16:9) . "
+                "STYLE REQUIREMENTS: Simple 2D black line drawings, mostly white empty space . "
+                "Pure white background, thick uneven black outlines, wobbly hand-drawn lines . "
+                "Flat colors only . Very basic shapes and childish comic style . "
+                "No realistic shading, no 3D, no cinematic lighting, no realistic cartoon style . "
+                "Keep compositions extremely clear, simple, bold and centered . "
+                f"OBJECTS AND ACTION TO DRAW: {actie_prompt_en}"
+            )
+
                 
                 storyboard_response = client.chat.completions.create(
                     model="gpt-4o-mini",
