@@ -199,15 +199,14 @@ elif huidige_pagina == "🎬 Storyboard Fabriek":
             # Voeg een st.spinner of status update toe
             st.write(f"🎨 Generating image {i+1}: {actie_prompt}")
             
-            # De nieuwe, genadeloze Stickman-prompt
+            # De originele 'magische' prompt uit jouw lokale Filmfabriek!
             image_prompt = (
-                "Generate a YouTube video illustration (16:9). "
-                "CRITICAL STYLE REQUIREMENTS: You must ONLY draw primitive, minimalist stick figures. "
-                "ABSOLUTELY NO human features: NO hair, NO facial expressions, NO eyes, NO pupils, NO noses, NO mouths, NO fingers, NO toes. "
-                "The characters must be drawn using ONLY simple black lines (like a sharpie) with zero internal details. "
-                "ABSOLUTELY NO colored clothing, NO skin color, and NO gender traits. "
-                "Pure white background, thick uneven black outlines, wobbly hand-drawn lines. "
-                "No realistic shading, no 3D, no cinematic lighting, no complex cartoons. "
+                "Generate a YouTube video illustration (16:9) . "
+                "STYLE REQUIREMENTS: Simple 2D black line drawings, mostly white empty space . "
+                "Pure white background, thick uneven black outlines, wobbly hand-drawn lines . "
+                "Flat colors only . Very basic shapes and childish comic style . "
+                "No realistic shading, no 3D, no cinematic lighting, no realistic cartoon style . "
+                "Keep compositions extremely clear, simple, bold and centered . "
                 f"OBJECTS AND ACTION TO DRAW: {actie_prompt}"
             )
 
